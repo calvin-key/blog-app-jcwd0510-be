@@ -1,6 +1,6 @@
 import { Prisma } from "@prisma/client";
-import { prisma } from "../../lib/prisma";
 import { PaginationQueryParams } from "../../types/pagination";
+import prisma from "../../lib/prisma";
 
 interface GetBlogsQuery extends PaginationQueryParams {
   search: string;
