@@ -1,6 +1,7 @@
 import { Router } from "express";
 import {
   createBlogController,
+  getBlogController,
   getBlogsController,
 } from "../controllers/blog.controller";
 import { uploader } from "../lib/multer";
@@ -11,6 +12,7 @@ import { verifyToken } from "../lib/jwt";
 const router = Router();
 
 router.get("/", getBlogsController);
+router.get("/:id", getBlogController);
 router.post(
   "/",
   verifyToken,
