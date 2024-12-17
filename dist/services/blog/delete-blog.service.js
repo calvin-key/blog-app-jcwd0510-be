@@ -12,34 +12,27 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getBlogsService = void 0;
+exports.deleteBlogService = void 0;
 const prisma_1 = __importDefault(require("../../lib/prisma"));
-const getBlogsService = (query) => __awaiter(void 0, void 0, void 0, function* () {
+const deleteBlogService = (id, userId) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { page, sortBy, sortOrder, take, search } = query;
-        const whereClause = { deletedAt: null };
-        if (search) {
-            whereClause.OR = [
-                { title: { contains: search, mode: "insensitive" } },
-                { category: { contains: search, mode: "insensitive" } },
-            ];
-            //   whereClause.title = { contains: search };
-        }
-        const blogs = yield prisma_1.default.blog.findMany({
-            where: whereClause,
-            skip: (page - 1) * take,
-            take: take,
-            orderBy: { [sortBy]: sortOrder },
-            include: { user: { select: { name: true } } },
+        const blog = yield prisma_1.default.blog.findFirst({
+            where: { id },
         });
-        const count = yield prisma_1.default.blog.count({ where: whereClause });
-        return {
-            data: blogs,
-            meta: { page, take, total: count },
-        };
+        if (!blog) {
+            throw new Error("Invalid blog ID");
+        }
+        if (blog.userId !== userId) {
+            throw new Error("Unauthorized");
+        }
+        yield prisma_1.default.blog.update({
+            where: { id },
+            data: { deletedAt: new Date() },
+        });
+        return { message: "Delete blog success" };
     }
     catch (error) {
         throw error;
     }
 });
-exports.getBlogsService = getBlogsService;
+exports.deleteBlogService = deleteBlogService;
