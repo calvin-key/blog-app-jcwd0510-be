@@ -19,7 +19,7 @@ const createBlogService = (body, thumbnail, userId) => __awaiter(void 0, void 0,
     try {
         const { title } = body;
         const blog = yield prisma_1.default.blog.findFirst({
-            where: { title },
+            where: { title, deletedAt: null },
         });
         if (blog) {
             throw new Error("Title already in use");

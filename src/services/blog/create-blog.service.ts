@@ -17,7 +17,7 @@ export const createBlogService = async (
     const { title } = body;
 
     const blog = await prisma.blog.findFirst({
-      where: { title },
+      where: { title, deletedAt: null },
     });
 
     if (blog) {
